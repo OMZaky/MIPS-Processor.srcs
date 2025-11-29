@@ -1,69 +1,84 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.MIPS_Package.all;
 
 entity RegisterFile is
-    Port ( read_sel1 : in STD_LOGIC_VECTOR (4 downto 0);
-           read_sel2 : in STD_LOGIC_VECTOR (4 downto 0);
-           write_sel : in STD_LOGIC_VECTOR (4 downto 0);
-           write_ena : in STD_LOGIC;
-           clk : in STD_LOGIC;
-           reset : in std_logic;
-           write_data : in STD_LOGIC_VECTOR (31 downto 0);
-           data1 : out STD_LOGIC_VECTOR (31 downto 0);
-           data2 : out STD_LOGIC_VECTOR (31 downto 0));
-           
+    Port ( 
+        read_sel1 : in  STD_LOGIC_VECTOR(4 downto 0);
+        read_sel2 : in  STD_LOGIC_VECTOR(4 downto 0);
+        write_sel : in  STD_LOGIC_VECTOR(4 downto 0);
+        write_ena : in  STD_LOGIC;
+        clk       : in  STD_LOGIC;
+        reset     : in  STD_LOGIC;
+        write_data: in  STD_LOGIC_VECTOR(31 downto 0);
+        data1     : out STD_LOGIC_VECTOR(31 downto 0);
+        data2     : out STD_LOGIC_VECTOR(31 downto 0)
+    );
 end RegisterFile;
 
-architecture RegisterfileArch of RegisterFile is
-signal dec_out : STD_LOGIC_VECTOR(31 downto 0);
-signal load : std_logic_vector(31 downto 0);
-signal q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15 : std_logic_vector(31 downto 0);
-signal q16, q17, q18, q19, q20, q21, q22, q23, q24, q25, q26, q27, q28, q29, q30, q31 : std_logic_vector(31 downto 0);
+architecture rtl of RegisterFile is
+
+    -- Signals for Decoder and Write Enable
+    signal dec_out : STD_LOGIC_VECTOR(31 downto 0);
+    signal load    : STD_LOGIC_VECTOR(31 downto 0);
     
-signal d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15 : std_logic_vector(31 downto 0);
-signal d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31 : std_logic_vector(31 downto 0);
+    -- Register Outputs (Q)
+    -- We define q0 to q31 to hold the stored values
+    signal q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15 : STD_LOGIC_VECTOR(31 downto 0);
+    signal q16, q17, q18, q19, q20, q21, q22, q23, q24, q25, q26, q27, q28, q29, q30, q31 : STD_LOGIC_VECTOR(31 downto 0);
+    
+    -- Inputs to Registers (D)
+    signal d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15 : STD_LOGIC_VECTOR(31 downto 0);
+    signal d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31 : STD_LOGIC_VECTOR(31 downto 0);
 
 begin
 
-Dec1 : Decoder port map (sel => write_sel , y => dec_out);
+    -- 1. WRITE DECODER
+    Dec1 : Decoder port map (sel => write_sel, y => dec_out);
 
-		load(0) <= '0';
-        load(1) <= write_ena AND dec_out(1);
-        load(2) <= write_ena AND dec_out(2);
-        load(3) <= write_ena AND dec_out(3);
-        load(4) <= write_ena AND dec_out(4);
-        load(5) <= write_ena AND dec_out(5);
-        load(6) <= write_ena AND dec_out(6);
-        load(7) <= write_ena AND dec_out(7);
-        load(8) <= write_ena AND dec_out(8);
-        load(9) <= write_ena AND dec_out(9);
-        load(10) <= write_ena AND dec_out(10);
-        load(11) <= write_ena AND dec_out(11);
-        load(12) <= write_ena AND dec_out(12);
-        load(13) <= write_ena AND dec_out(13);
-        load(14) <= write_ena AND dec_out(14);
-        load(15) <= write_ena AND dec_out(15);
-        load(16) <= write_ena AND dec_out(16);
-        load(17) <= write_ena AND dec_out(17);
-        load(18) <= write_ena AND dec_out(18);
-        load(19) <= write_ena AND dec_out(19);
-        load(20) <= write_ena AND dec_out(20);
-        load(21) <= write_ena AND dec_out(21);
-        load(22) <= write_ena AND dec_out(22);
-        load(23) <= write_ena AND dec_out(23);
-        load(24) <= write_ena AND dec_out(24);
-        load(25) <= write_ena AND dec_out(25);
-        load(26) <= write_ena AND dec_out(26);
-        load(27) <= write_ena AND dec_out(27);
-        load(28) <= write_ena AND dec_out(28);
-        load(29) <= write_ena AND dec_out(29);
-        load(30) <= write_ena AND dec_out(30);
-        load(31) <= write_ena AND dec_out(31);
-		
-		
-    d0 <= (others => '0');
+    -- 2. WRITE ENABLE LOGIC (AND Gates)
+    
+    -- Generate 'load' signals. Register 0 is skipped (read-only 0).
+    load(1)  <= write_ena AND dec_out(1);
+    load(2)  <= write_ena AND dec_out(2);
+    load(3)  <= write_ena AND dec_out(3);
+    load(4)  <= write_ena AND dec_out(4);
+    load(5)  <= write_ena AND dec_out(5);
+    load(6)  <= write_ena AND dec_out(6);
+    load(7)  <= write_ena AND dec_out(7);
+    load(8)  <= write_ena AND dec_out(8);
+    load(9)  <= write_ena AND dec_out(9);
+    load(10) <= write_ena AND dec_out(10);
+    load(11) <= write_ena AND dec_out(11);
+    load(12) <= write_ena AND dec_out(12);
+    load(13) <= write_ena AND dec_out(13);
+    load(14) <= write_ena AND dec_out(14);
+    load(15) <= write_ena AND dec_out(15);
+    load(16) <= write_ena AND dec_out(16);
+    load(17) <= write_ena AND dec_out(17);
+    load(18) <= write_ena AND dec_out(18);
+    load(19) <= write_ena AND dec_out(19);
+    load(20) <= write_ena AND dec_out(20);
+    load(21) <= write_ena AND dec_out(21);
+    load(22) <= write_ena AND dec_out(22);
+    load(23) <= write_ena AND dec_out(23);
+    load(24) <= write_ena AND dec_out(24);
+    load(25) <= write_ena AND dec_out(25);
+    load(26) <= write_ena AND dec_out(26);
+    load(27) <= write_ena AND dec_out(27);
+    load(28) <= write_ena AND dec_out(28);
+    load(29) <= write_ena AND dec_out(29);
+    load(30) <= write_ena AND dec_out(30);
+    load(31) <= write_ena AND dec_out(31);
+
+    -- 3. REGISTERS (Flip-Flops)
+    
+    -- REGISTER 0: Hardwired to Zero
+    
+    q0 <= (others => '0'); 
+
     -- REGISTER 1
-    d1 <= write_data when load(1)else q1;
+    d1 <= write_data when load(1) = '1' else q1;
     REG_1: flopr port map(clk => clk, reset => reset, d => d1, q => q1);
 
     -- REGISTER 2
@@ -185,17 +200,27 @@ Dec1 : Decoder port map (sel => write_sel , y => dec_out);
     -- REGISTER 31
     d31 <= write_data when load(31) = '1' else q31;
     REG_31: flopr port map(clk => clk, reset => reset, d => d31, q => q31);
+
+    -- 4. READ LOGIC 
     
-    --Mux1
-    Mux1 : Mux port map ( I31 => q31, I30 => q30,I29 => q29,I28 => q28,I27 => q27,I26 => q26,I25 => q25,I24 => q24,I23 => q23,I22 => q22,I21 => q21,I20 => q20,I19 => q19,I18 => q18,I17 => q17,I16 => q16,
-    I15 => q15,I14 => q14,I13 => q13,I12 => q12,
-    I11 => q11,I10 => q10,I9  => q9,I8  => q8,
-    I7  => q7,I6  => q6,I5  => q5,I4  => q4,
-    I3  => q3,I2  => q2,I1  => q1,I0  => q0,S => read_sel1,O => data1);
-    --Mux2
-    Mux2 : Mux port map ( I31 => q31, I30 => q30,I29 => q29,I28 => q28,I27 => q27,I26 => q26,I25 => q25,I24 => q24,I23 => q23,I22 => q22,I21 => q21,I20 => q20,I19 => q19,I18 => q18,I17 => q17,I16 => q16,
-    I15 => q15,I14 => q14,I13 => q13,I12 => q12,
-    I11 => q11,I10 => q10,I9  => q9,I8  => q8,
-    I7  => q7,I6  => q6,I5  => q5,I4  => q4,
-    I3  => q3,I2  => q2,I1  => q1,I0  => q0,S => read_sel2,O => data2);
-end RegisterfileArch;
+    -- Mux for Read Port 1
+    ReadMux1: mux port map (
+        I0 => q0, I1 => q1, I2 => q2, I3 => q3, I4 => q4, I5 => q5, I6 => q6, I7 => q7,
+        I8 => q8, I9 => q9, I10 => q10, I11 => q11, I12 => q12, I13 => q13, I14 => q14, I15 => q15,
+        I16 => q16, I17 => q17, I18 => q18, I19 => q19, I20 => q20, I21 => q21, I22 => q22, I23 => q23,
+        I24 => q24, I25 => q25, I26 => q26, I27 => q27, I28 => q28, I29 => q29, I30 => q30, I31 => q31,
+        S => read_sel1,
+        O => data1
+    );
+
+    -- Mux for Read Port 2
+    ReadMux2: mux port map (
+        I0 => q0, I1 => q1, I2 => q2, I3 => q3, I4 => q4, I5 => q5, I6 => q6, I7 => q7,
+        I8 => q8, I9 => q9, I10 => q10, I11 => q11, I12 => q12, I13 => q13, I14 => q14, I15 => q15,
+        I16 => q16, I17 => q17, I18 => q18, I19 => q19, I20 => q20, I21 => q21, I22 => q22, I23 => q23,
+        I24 => q24, I25 => q25, I26 => q26, I27 => q27, I28 => q28, I29 => q29, I30 => q30, I31 => q31,
+        S => read_sel2,
+        O => data2
+    );
+
+end rtl;
