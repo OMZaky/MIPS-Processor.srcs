@@ -9,7 +9,7 @@ entity RegisterFile is
         write_sel : in  STD_LOGIC_VECTOR(4 downto 0);
         write_ena : in  STD_LOGIC;
         clk       : in  STD_LOGIC;
-        reset     : in  STD_LOGIC;
+        --reset     : in  STD_LOGIC;
         write_data: in  STD_LOGIC_VECTOR(31 downto 0);
         data1     : out STD_LOGIC_VECTOR(31 downto 0);
         data2     : out STD_LOGIC_VECTOR(31 downto 0)
@@ -18,6 +18,7 @@ end RegisterFile;
 
 architecture rtl of RegisterFile is
 
+    signal reset : std_logic := '0';
     -- Signals for Decoder and Write Enable
     signal dec_out : STD_LOGIC_VECTOR(31 downto 0);
     signal load    : STD_LOGIC_VECTOR(31 downto 0);

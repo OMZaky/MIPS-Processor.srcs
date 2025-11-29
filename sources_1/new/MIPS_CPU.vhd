@@ -75,7 +75,7 @@ begin
         write_sel  => write_reg_addr,
         write_ena  => regwrite,
         clk        => clk,
-        reset      => reset,
+        --reset      => reset,
         write_data => write_back_data,
         data1      => read_data_1,
         data2      => read_data_2

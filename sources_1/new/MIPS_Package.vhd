@@ -61,7 +61,7 @@ package MIPS_Package is
             write_sel : in  STD_LOGIC_VECTOR(4 downto 0);
             write_ena : in  STD_LOGIC;
             clk       : in  STD_LOGIC;
-            reset     : in  STD_LOGIC;
+            --reset     : in  STD_LOGIC;
             write_data: in  STD_LOGIC_VECTOR(31 downto 0);
             data1     : out STD_LOGIC_VECTOR(31 downto 0);
             data2     : out STD_LOGIC_VECTOR(31 downto 0)
@@ -72,6 +72,14 @@ package MIPS_Package is
         Port ( 
             Input  : in  STD_LOGIC_VECTOR(15 downto 0);
             Output : out STD_LOGIC_VECTOR(31 downto 0)
+        );
+    end component;
+    
+    component ALUControl
+        Port (
+            ALUOp     : in  STD_LOGIC_VECTOR(1 downto 0);
+            Funct     : in  STD_LOGIC_VECTOR(5 downto 0);
+            Operation : out STD_LOGIC_VECTOR(3 downto 0)
         );
     end component;
 
