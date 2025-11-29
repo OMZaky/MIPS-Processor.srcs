@@ -67,5 +67,12 @@ package MIPS_Package is
             data2     : out STD_LOGIC_VECTOR(31 downto 0)
         );
     end component;
+    
+    component SignExtend
+        Port ( 
+            Input  : in  STD_LOGIC_VECTOR(15 downto 0);
+            Output : out STD_LOGIC_VECTOR(31 downto 0)
+        );
+    end component;
 
 end MIPS_Package;
