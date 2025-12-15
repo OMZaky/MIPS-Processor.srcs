@@ -82,5 +82,20 @@ package MIPS_Package is
             Operation : out STD_LOGIC_VECTOR(3 downto 0)
         );
     end component;
+        
+    component MainControl
+        Port ( 
+           OpCode : in STD_LOGIC_VECTOR (5 downto 0);
+           RegDst : out STD_LOGIC;
+           Jump : out STD_LOGIC;
+           Branch : out STD_LOGIC;
+           MemRead : out STD_LOGIC;
+           MemToReg : out STD_LOGIC;
+           AluOp : out std_logic_vector (1 downto 0);
+           MemWrite : out STD_LOGIC;
+           AluSrc : out STD_LOGIC;
+           RegWrite : out STD_LOGIC);
+    end component;
+    
 
 end MIPS_Package;
