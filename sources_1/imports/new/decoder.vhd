@@ -1,14 +1,14 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity Decoder is
+entity alu_decoder is
     port(
         sel : in std_logic_vector(4 downto 0);
         y   : out std_logic_vector(31 downto 0)
     );
-end Decoder;
+end alu_decoder;
 
-architecture rtl of Decoder is
+architecture rtl of alu_decoder is
 begin
     process(sel)
     begin

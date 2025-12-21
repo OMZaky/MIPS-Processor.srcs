@@ -13,9 +13,25 @@ package MIPS_Package is
             zflag   : out STD_LOGIC
         );
     end component;
-
-   
-    component Decoder
+	
+	component dmem
+		port(
+		clk, we: in STD_LOGIC;
+		a, wd: in STD_LOGIC_VECTOR (31 downto 0);
+		rd: out STD_LOGIC_VECTOR (31 downto 0)
+		);
+	end component;
+	
+	
+	component imem
+		port(
+		
+		a: in STD_LOGIC_VECTOR(5 downto 0);
+		rd: out STD_LOGIC_VECTOR(31 downto 0)
+		
+		);
+	end component;
+    component alu_decoder
         Port (
             sel : in  STD_LOGIC_VECTOR(4 downto 0);
             y   : out STD_LOGIC_VECTOR(31 downto 0)
@@ -69,8 +85,29 @@ package MIPS_Package is
             Operation : out STD_LOGIC_VECTOR(3 downto 0)
         );
     end component;
+    
+    component datapath
+        port(
+        clk, reset   : in STD_LOGIC;
+        readdata     : in STD_LOGIC_VECTOR(31 downto 0);
+        instr        : in STD_LOGIC_VECTOR(31 downto 0);
+        memtoreg     : in STD_LOGIC;
+        pcsrc        : in STD_LOGIC;
+        alusrc       : in STD_LOGIC;
+        regwrite     : in STD_LOGIC;
+        regdst       : in STD_LOGIC;
+        aluoperation : in STD_LOGIC_VECTOR(3 downto 0);
+        zero         : out STD_LOGIC;
+        pc           : out STD_LOGIC_VECTOR(31 downto 0); -- Changed from buffer to out
+        jump         : in std_logic;
+        aluout       : out STD_LOGIC_VECTOR(31 downto 0); -- Changed from buffer to out
+        writedata    : out STD_LOGIC_VECTOR(31 downto 0)  -- Changed from buffer to out
         
-    component MainControl
+        );
+    
+    end component;
+        
+    component Main_Control
         Port ( 
            OpCode : in STD_LOGIC_VECTOR (5 downto 0);
            RegDst : out STD_LOGIC;

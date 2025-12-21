@@ -35,7 +35,7 @@ architecture rtl of RegisterFile is
 begin
 
     -- 1. WRITE DECODER
-    Dec1 : Decoder port map (sel => write_sel, y => dec_out);
+    Dec1 : alu_decoder port map (sel => write_sel, y => dec_out);
 
     -- 2. WRITE ENABLE LOGIC (AND Gates)
     
