@@ -14,13 +14,17 @@ begin
     process(ALUOp, Funct)
     begin
         case ALUOp is
+            -- Case 00: Address Calculation & Immediate Math
             when "00" => 
-                Operation <= "0010"; -- LW/SW/ADDI -> ADD
+                Operation <= "0010"; -- LW, SW, ADDI, LWR, LW_INCR -> Force ADD
                 
+            -- Case 01: Branch Comparisons
             when "01" => 
-                Operation <= "0110"; -- BEQ -> SUB
+                Operation <= "0110"; -- BEQ, BNE, BLT, BGT, BLE -> Force SUB
+                -- (The Main Module uses the resulting Zero/Negative flags)
                 
-            when "10" => -- R-Type
+            -- Case 10: R-Type Instructions (Look at Funct)
+            when "10" => 
                 case Funct is
                     when "100000" => Operation <= "0010"; -- add
                     when "100010" => Operation <= "0110"; -- sub
@@ -28,7 +32,11 @@ begin
                     when "100101" => Operation <= "0001"; -- or
                     when "101010" => Operation <= "0111"; -- slt
                     when "100111" => Operation <= "1100"; -- nor
-                    when others   => Operation <= "0010"; -- default
+                    
+                    -- Note: 'jr' (001000) and 'jalr' (001001) fall to default.
+                    -- This effectively performs an ADD, which is fine because 
+                    -- the ALU result is ignored for Jump Register instructions.
+                    when others   => Operation <= "0010"; -- default (ADD)
                 end case;
                 
             when others => 

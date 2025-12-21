@@ -7,7 +7,9 @@ entity aluproj is
            data2 : in STD_LOGIC_VECTOR (31 downto 0);
            aluop : in STD_LOGIC_VECTOR (3 downto 0);    
            dataout : out STD_LOGIC_VECTOR (31 downto 0);
-           zflag : out STD_LOGIC);
+           zflag : out STD_LOGIC;
+           nflag   : out STD_LOGIC
+           );
 end aluproj;
 
 architecture rtl of aluproj is
@@ -31,5 +33,7 @@ begin
 
     dataout <= result;
     zflag <= '1' when result = x"00000000" else '0';
+    
+    nflag <= result(31);
 
 end rtl;
