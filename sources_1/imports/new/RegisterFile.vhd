@@ -7,12 +7,10 @@ entity RegisterFile is
         read_sel1 : in  STD_LOGIC_VECTOR(4 downto 0);
         read_sel2 : in  STD_LOGIC_VECTOR(4 downto 0);
         
-        -- Write Port 1 (Standard)
         write_sel : in  STD_LOGIC_VECTOR(4 downto 0);
         write_ena : in  STD_LOGIC;
         write_data: in  STD_LOGIC_VECTOR(31 downto 0);
         
-        -- Write Port 2 (Added for lw_incr)
         write_sel2 : in  STD_LOGIC_VECTOR(4 downto 0);
         write_ena2 : in  STD_LOGIC;
         write_data2: in  STD_LOGIC_VECTOR(31 downto 0);
@@ -27,41 +25,30 @@ architecture rtl of RegisterFile is
 
     signal reset : std_logic := '0';
     
-    -- Decoders outputs
     signal dec_out1 : STD_LOGIC_VECTOR(31 downto 0);
     signal dec_out2 : STD_LOGIC_VECTOR(31 downto 0);
     
-    -- Load signals (Active High)
     signal load1    : STD_LOGIC_VECTOR(31 downto 0);
     signal load2    : STD_LOGIC_VECTOR(31 downto 0);
     
-    -- Register Outputs (Q)
     signal q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15 : STD_LOGIC_VECTOR(31 downto 0);
     signal q16, q17, q18, q19, q20, q21, q22, q23, q24, q25, q26, q27, q28, q29, q30, q31 : STD_LOGIC_VECTOR(31 downto 0);
     
-    -- Inputs to Registers (D)
     signal d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15 : STD_LOGIC_VECTOR(31 downto 0);
     signal d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31 : STD_LOGIC_VECTOR(31 downto 0);
 
 begin
 
-    -- 1. WRITE DECODERS
     Dec1_Inst : alu_decoder port map (sel => write_sel,  y => dec_out1);
     Dec2_Inst : alu_decoder port map (sel => write_sel2, y => dec_out2);
 
-    -- 2. WRITE ENABLE LOGIC
-    -- We generate load signals for every register based on both ports
-    -- Register 0 is always 0, so we skip logic for it.
     
     GEN_LOAD: for i in 1 to 31 generate
         load1(i) <= write_ena  AND dec_out1(i);
         load2(i) <= write_ena2 AND dec_out2(i);
     end generate;
 
-    -- 3. REGISTERS (Flip-Flops)
-    -- Logic: If Port 1 writes, take D1. Else if Port 2 writes, take D2. Else hold Q.
-    
-    -- REGISTER 0: Hardwired to Zero
+   
     q0 <= (others => '0'); 
 
     -- REGISTER 1
@@ -188,7 +175,7 @@ begin
     d31 <= write_data when load1(31) = '1' else write_data2 when load2(31) = '1' else q31;
     REG_31: flopr generic map(32) port map(clk => clk, reset => reset, d => d31, q => q31);
 
-    -- 4. READ LOGIC 
+    
     
     -- Mux for Read Port 1
     ReadMux1: mux port map (

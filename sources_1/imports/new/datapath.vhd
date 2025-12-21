@@ -44,7 +44,6 @@ begin
     pcbrmux: mux2 generic map(n => 32) port map(I1 => pcplus4, I2 => pcbranch, sel => pcsrc, output => pcnextbr);
     pcjump <= pcplus4(31 downto 28) & instr(25 downto 0) & "00";
     
-    -- JUMP TARGET SELECTION
     with jumpsrc select pc_jump_target <=
         pcjump     when "00",
         readdata1  when "01", 
