@@ -25,7 +25,7 @@ begin
        AluOp <= "10" when OpCode = "000000" else 
                 "01" when OpCode = "000100" else "00";
        MemWrite <= '1' when OpCode = "101011" else '0';
-       AluSrc <= '1' when OpCode = ("100011" or "101011") else '0'; 
-       RegWrite <= '1' when OpCode = ("000000" or "100011") else '0';
+       AluSrc <= '1' when (OpCode = "100011") or (OpCode = "101011") else '0'; 
+       RegWrite <= '1' when (OpCode = "000000") or (OpCode = "100011") else '0';
        
 end Behavioral;

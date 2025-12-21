@@ -5,7 +5,7 @@ use IEEE.std_logic_unsigned.all;
 entity aluproj is
     Port ( data1 : in STD_LOGIC_VECTOR (31 downto 0);
            data2 : in STD_LOGIC_VECTOR (31 downto 0);
-           aluop : in STD_LOGIC_VECTOR (3 downto 0);
+           aluop : in STD_LOGIC_VECTOR (3 downto 0);    
            dataout : out STD_LOGIC_VECTOR (31 downto 0);
            zflag : out STD_LOGIC);
 end aluproj;

@@ -3,9 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 package MIPS_Package is
 
-    -------------------------------------------------------------------------
-    -- 1. ALU Component (aluproj)
-    -------------------------------------------------------------------------
+
     component aluproj
         Port ( 
             data1   : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -16,9 +14,7 @@ package MIPS_Package is
         );
     end component;
 
-    -------------------------------------------------------------------------
-    -- 2. Decoder Component (5-to-32)
-    -------------------------------------------------------------------------
+   
     component Decoder
         Port (
             sel : in  STD_LOGIC_VECTOR(4 downto 0);
@@ -26,9 +22,7 @@ package MIPS_Package is
         );
     end component;
 
-    -------------------------------------------------------------------------
-    -- 3. Multiplexer Component (2-to-1, 32-bit)
-    -------------------------------------------------------------------------
+   
     component mux
         Port (I31, I30, I29, I28, I27, I26, I25, I24, I23, I22,
         I21, I20, I19, I18, I17, I16, I15, I14, I13, I12,
@@ -39,21 +33,14 @@ package MIPS_Package is
         O : out STD_LOGIC_VECTOR(31 downto 0));
     end component;
 
-    -------------------------------------------------------------------------
-    -- 4. Flip-Flop Component (flopr)
-    -------------------------------------------------------------------------
-    component flopr
-        Port (
-            clk   : in  STD_LOGIC;
-            reset : in  STD_LOGIC;
-            d     : in  STD_LOGIC_VECTOR(31 downto 0);
-            q     : out STD_LOGIC_VECTOR(31 downto 0)
-        );
+   
+   component flopr generic (n : NATURAL := 32); port(
+           clk, reset: in STD_LOGIC;
+           d: in STD_LOGIC_VECTOR(n-1 downto 0);
+           q: out STD_LOGIC_VECTOR(n-1 downto 0));
     end component;
 
-    -------------------------------------------------------------------------
-    -- 5. Register File Component
-    -------------------------------------------------------------------------
+  
     component RegisterFile
         Port ( 
             read_sel1 : in  STD_LOGIC_VECTOR(4 downto 0);
@@ -97,5 +84,22 @@ package MIPS_Package is
            RegWrite : out STD_LOGIC);
     end component;
     
+    component adder is
+    Port ( a : in STD_LOGIC_VECTOR (31 downto 0);
+           b : in STD_LOGIC_VECTOR (31 downto 0);
+           output : out STD_LOGIC_VECTOR (31 downto 0));
+    end component;
+    
+    component mux2 is generic (n : NATURAL := 32);
+    Port ( I1 : in STD_LOGIC_VECTOR (n-1 downto 0);
+           I2 : in STD_LOGIC_VECTOR (n-1 downto 0);
+           sel : in STD_LOGIC;
+           output : out STD_LOGIC_VECTOR (n-1 downto 0));
+    end component;
+    
+    component sl2 is
+    Port ( a : in STD_LOGIC_VECTOR (31 downto 0);
+           o : out STD_LOGIC_VECTOR (31 downto 0));
+    end component;
 
 end MIPS_Package;
